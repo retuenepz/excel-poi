@@ -1,8 +1,11 @@
 package com.hongyb.excel.style;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
  * 默认的Cellstyle
@@ -22,8 +25,8 @@ public class DefaultStyle {
             return titleStyle;
         }
         titleStyle = workbook.createCellStyle() ;
-        //TODO
-
+        titleStyle.setAlignment(HorizontalAlignment.CENTER);
+        titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         return titleStyle ;
     }
 
@@ -36,7 +39,8 @@ public class DefaultStyle {
             return cellStyle;
         }
         cellStyle = workbook.createCellStyle();
-        // TODO
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
         return cellStyle;
 
     }
@@ -46,7 +50,10 @@ public class DefaultStyle {
             return menuStyle;
         }
         menuStyle = hssfWorkbook.createCellStyle();
-        // TODO
+
+        menuStyle.setAlignment(HorizontalAlignment.CENTER);
+        menuStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
         return menuStyle;
     }
 }
