@@ -1,6 +1,7 @@
 package com.hongyb.excel.style;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 
 /**
@@ -11,6 +12,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 public class DefaultStyle {
     private static CellStyle titleStyle = null ;
     private static CellStyle cellStyle = null ;
+    private static CellStyle menuStyle = null ;
     /**
      * 默认标题样式
      * @return
@@ -39,4 +41,12 @@ public class DefaultStyle {
 
     }
 
+    public static CellStyle menuStyle(HSSFWorkbook hssfWorkbook) {
+        if(menuStyle!= null){
+            return menuStyle;
+        }
+        menuStyle = hssfWorkbook.createCellStyle();
+        // TODO
+        return menuStyle;
+    }
 }

@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,10 +27,12 @@ public class Main {
         xiaoming.setId("001");
         xiaoming.setName("小明");
         xiaoming.setAge(18);
+        xiaoming.setBirth(new Date());
         Student xiaohong = new Student();
         xiaohong.setId("002");
-        xiaoming.setName("小红");
+        xiaohong.setName("小红");
         xiaohong.setAge(18);
+        xiaohong.setBirth(new Date());
         dataList.add(xiaoming);
         dataList.add(xiaohong);
     }

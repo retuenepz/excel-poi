@@ -18,5 +18,10 @@ public @interface Column {
      */
     int value() default -1 ;
 
+    /**
+     *  每列的小标题
+     * @return
+     */
+    String menu() default "" ;
 
 }

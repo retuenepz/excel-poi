@@ -1,6 +1,7 @@
 package com.hongyb.excel.builder;
 
 import com.hongyb.excel.ExcelWriter;
+import com.hongyb.excel.Exception.BuildException;
 import com.hongyb.excel.style.DefaultStyle;
 import com.hongyb.excel.utils.Collections;
 import com.hongyb.excel.utils.StringUtils;
@@ -40,6 +41,10 @@ public class HSSFExcelWriterBuilder {
      *  数据格样式
      */
     CellStyle cellStyle = null ;
+    /**
+     * 菜单style
+     */
+    private CellStyle menuStyle;
 
     public HSSFExcelWriterBuilder(HSSFWorkbook hssfWorkbook) {
         this.hssfWorkbook = hssfWorkbook;
@@ -65,12 +70,17 @@ public class HSSFExcelWriterBuilder {
         this.cellStyle = style ;
         return this;
     }
+    public HSSFExcelWriterBuilder menuStyle(CellStyle style){
+        this.menuStyle = style;
+        return this;
+    }
     public HSSFExcelWriterBuilder list(List<?> list){
         this.dataList = list ;
         return this;
     }
 
     public ExcelWriter build(){
+
         // 设置默认的样式
         if(StringUtils.isNotBlank(titleName) && titleStyle == null){
             titleStyle = DefaultStyle.titleStyle(hssfWorkbook);
@@ -78,7 +88,10 @@ public class HSSFExcelWriterBuilder {
         if(Collections.isNotBlank(dataList) && cellStyle == null ){
             cellStyle = DefaultStyle.cellStyle(hssfWorkbook) ;
         }
-        return new HSSFExcelWriter(sheetName,titleName,dataList,hssfWorkbook,titleStyle,cellStyle);
+        if(Collections.isNotBlank(dataList) && menuStyle == null ){
+            menuStyle = DefaultStyle.menuStyle(hssfWorkbook) ;
+        }
+        return new HSSFExcelWriter(sheetName,titleName,dataList,hssfWorkbook,titleStyle,cellStyle,menuStyle);
     }
 
 

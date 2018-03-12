@@ -12,4 +12,10 @@ public class StringUtils {
         }
         return false;
     }
+    public static boolean isBlank(String s ){
+        if(s == null || s.equals("")){
+            return true;
+        }
+        return false;
+    }
 }

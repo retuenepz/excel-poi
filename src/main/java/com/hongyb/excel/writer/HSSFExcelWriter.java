@@ -5,9 +5,7 @@ import com.hongyb.excel.Exception.WrongColumnAnnotationException;
 import com.hongyb.excel.annotation.Column;
 import com.hongyb.excel.converter.BasicConverter;
 import com.hongyb.excel.converter.ConverterManager;
-import com.hongyb.excel.utils.Collections;
-import com.hongyb.excel.utils.ReflectUtil;
-import com.hongyb.excel.utils.StringUtils;
+import com.hongyb.excel.utils.*;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -51,14 +49,19 @@ public class HSSFExcelWriter implements ExcelWriter {
 
     
     private static BasicConverter basicConverter = new BasicConverter();
+    /**
+     * 菜单style
+     */
+    private CellStyle menuStyle =null ;
 
-    public HSSFExcelWriter(String sheetName, String titleName, List<?> dataList, HSSFWorkbook hssfWorkbook, CellStyle titleStyle, CellStyle cellStyle) {
+    public HSSFExcelWriter(String sheetName, String titleName, List<?> dataList, HSSFWorkbook hssfWorkbook, CellStyle titleStyle, CellStyle cellStyle, CellStyle menuStyle) {
         this.sheetName = sheetName;
         this.titleName = titleName;
         this.dataList = dataList;
         this.hssfWorkbook = hssfWorkbook;
         this.titleStyle = titleStyle;
         this.cellStyle = cellStyle;
+        this.menuStyle = menuStyle ;
     }
 
     /**
@@ -66,7 +69,11 @@ public class HSSFExcelWriter implements ExcelWriter {
      */
     public void write(OutputStream output) throws IOException {
 
+        Field[] declaredFields = null ;
         int startRow = 0 ;
+        if(Collections.isNotBlank(dataList)){
+            declaredFields = dataList.get(0).getClass().getDeclaredFields();
+        }
         HSSFSheet sheet = hssfWorkbook.createSheet(sheetName);
         // title处理
         if(StringUtils.isNotBlank(titleName)){
@@ -77,12 +84,20 @@ public class HSSFExcelWriter implements ExcelWriter {
             titleCell.setCellValue(titleName);
             // 合并多少行 默认5
             int mergeColCount = 5 ;
-            if(Collections.isNotBlank(dataList)){
-                mergeColCount=dataList.size();
+            if(Arrays.isNotBlank(declaredFields)){
+                mergeColCount=declaredFields.length-1;
             }
             // 标题单元格合并
             sheet.addMergedRegion(new CellRangeAddress(startRow,0,0,mergeColCount));
             startRow++;
+        }
+        // 列小标题处理
+        if(Arrays.isNotBlank(declaredFields)){
+            if(declaredFields != null && declaredFields.length !=0){
+                HSSFRow menuRow = sheet.createRow(startRow);
+                menuProcess(declaredFields,menuRow);
+                startRow++;
+            }
         }
         // 数据list处理
         if(Collections.isNotBlank(dataList)){
@@ -91,13 +106,9 @@ public class HSSFExcelWriter implements ExcelWriter {
                 HSSFRow row = sheet.createRow(startRow++);
                 Field[] fields = rowData.getClass().getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
-                    //  TODO 注解实现
                     Field field = fields[i];
-                    Column columnAnno = field.getAnnotation(Column.class);
-                    if (columnAnno==null && columnAnno.value() != -1) {
-                        throw new WrongColumnAnnotationException("实体类未使用注解或注解值错误");
-                    }
-                    HSSFCell cell = row.createCell(columnAnno.value());
+                    int order = ColumnUtils.getOrder(field);
+                    HSSFCell cell = row.createCell(order);
                     cell.setCellStyle(cellStyle);
                     cell.setCellValue(basicConverter.convert(ReflectUtil.getValueOfField(rowData,field)));
                 }
@@ -107,6 +118,21 @@ public class HSSFExcelWriter implements ExcelWriter {
         // 输出文件
         hssfWorkbook.write(output);
         output.close();
+    }
+
+    /**
+     * 处理小标题
+     * @param declaredFields
+     * @param menuRow
+     */
+    private void menuProcess(Field[] declaredFields, HSSFRow menuRow) {
+        for (Field field : declaredFields) {
+            int order = ColumnUtils.getOrder(field);
+            HSSFCell cell = menuRow.createCell(order);
+            cell.setCellStyle(menuStyle);
+            String menu = ColumnUtils.getMenu(field);
+            cell.setCellValue(menu);
+        }
     }
 
     @Override

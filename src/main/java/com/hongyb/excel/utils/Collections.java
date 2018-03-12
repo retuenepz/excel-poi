@@ -15,4 +15,8 @@ public class Collections {
         }
         return false;
     }
+
+    public static boolean isBlank(List<?> dataList) {
+        return !isNotBlank(dataList);
+    }
 }
