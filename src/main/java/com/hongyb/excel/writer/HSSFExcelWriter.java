@@ -1,8 +1,12 @@
 package com.hongyb.excel.writer;
 
 import com.hongyb.excel.ExcelWriter;
+import com.hongyb.excel.Exception.WrongColumnAnnotationException;
 import com.hongyb.excel.annotation.Column;
+import com.hongyb.excel.converter.BasicConverter;
+import com.hongyb.excel.converter.ConverterManager;
 import com.hongyb.excel.utils.Collections;
+import com.hongyb.excel.utils.ReflectUtil;
 import com.hongyb.excel.utils.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -10,6 +14,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -44,6 +49,8 @@ public class HSSFExcelWriter implements ExcelWriter {
      */
     CellStyle cellStyle = null ;
 
+    
+    private static BasicConverter basicConverter = new BasicConverter();
 
     public HSSFExcelWriter(String sheetName, String titleName, List<?> dataList, HSSFWorkbook hssfWorkbook, CellStyle titleStyle, CellStyle cellStyle) {
         this.sheetName = sheetName;
@@ -80,19 +87,19 @@ public class HSSFExcelWriter implements ExcelWriter {
         // 数据list处理
         if(Collections.isNotBlank(dataList)){
             // 循环写
-            for (Object o : dataList) {
+            for (Object rowData : dataList) {
                 HSSFRow row = sheet.createRow(startRow++);
-                Field[] fields = o.getClass().getDeclaredFields();
+                Field[] fields = rowData.getClass().getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
                     //  TODO 注解实现
                     Field field = fields[i];
                     Column columnAnno = field.getAnnotation(Column.class);
-                    if (columnAnno==null) {
-                        // TODO 抛异常
+                    if (columnAnno==null && columnAnno.value() != -1) {
+                        throw new WrongColumnAnnotationException("实体类未使用注解或注解值错误");
                     }
-                    HSSFCell cell = row.createCell(i);
+                    HSSFCell cell = row.createCell(columnAnno.value());
                     cell.setCellStyle(cellStyle);
-                    cell.setCellValue("123123");
+                    cell.setCellValue(basicConverter.convert(ReflectUtil.getValueOfField(rowData,field)));
                 }
             }
 
