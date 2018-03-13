@@ -40,7 +40,7 @@ public class Main {
     public void test01() throws IOException {
         File file = new File("xxx.xls");
         HSSFExcelWriterBuilder builder = new HSSFExcelWriterBuilder();
-        builder.title("测试哟").sheetName("shit").list(dataList).build().write(file);
+        builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write(file);
 
     }
 

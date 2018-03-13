@@ -2,10 +2,14 @@ package com.hongyb.excel.builder;
 
 import com.hongyb.excel.ExcelWriter;
 import com.hongyb.excel.Exception.BuildException;
+import com.hongyb.excel.annotation.Style;
 import com.hongyb.excel.style.DefaultStyle;
+import com.hongyb.excel.style.ExcelStyle;
+import com.hongyb.excel.style.StyleManager;
 import com.hongyb.excel.utils.Collections;
 import com.hongyb.excel.utils.StringUtils;
 import com.hongyb.excel.writer.HSSFExcelWriter;
+import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 
@@ -46,12 +50,14 @@ public class HSSFExcelWriterBuilder {
      */
     private CellStyle menuStyle;
 
+    private StyleManager styleManager = null;
     public HSSFExcelWriterBuilder(HSSFWorkbook hssfWorkbook) {
         this.hssfWorkbook = hssfWorkbook;
     }
 
     public HSSFExcelWriterBuilder() {
         this.hssfWorkbook = new HSSFWorkbook();
+        this.styleManager = new StyleManager(hssfWorkbook);
     }
 
     public HSSFExcelWriterBuilder title(String title){
@@ -79,19 +85,28 @@ public class HSSFExcelWriterBuilder {
         return this;
     }
 
-    public ExcelWriter build(){
+    public ExcelWriter build(Class<?> clazz){
+        resolveStyle(clazz);
 
-        // 设置默认的样式
-        if(StringUtils.isNotBlank(titleName) && titleStyle == null){
-            titleStyle = DefaultStyle.titleStyle(hssfWorkbook);
-        }
-        if(Collections.isNotBlank(dataList) && cellStyle == null ){
-            cellStyle = DefaultStyle.cellStyle(hssfWorkbook) ;
-        }
-        if(Collections.isNotBlank(dataList) && menuStyle == null ){
-            menuStyle = DefaultStyle.menuStyle(hssfWorkbook) ;
-        }
         return new HSSFExcelWriter(sheetName,titleName,dataList,hssfWorkbook,titleStyle,cellStyle,menuStyle);
+    }
+
+    /**
+     * 处理style注解
+     * @param clazz
+     */
+    private void resolveStyle(Class<?> clazz) {
+        Style style = clazz.getAnnotation(Style.class);
+        if(style!=null){
+            // 应用用户定义样式
+            this.cellStyle = styleManager.getStyle(style.cellStyle());
+            this.menuStyle = styleManager.getStyle(style.menuStyle());
+            this.titleStyle = styleManager.getStyle(style.titleStyle());
+        }else{
+            this.cellStyle = DefaultStyle.cellStyle(this.hssfWorkbook);
+            this.menuStyle = DefaultStyle.menuStyle(this.hssfWorkbook);
+            this.titleStyle = DefaultStyle.titleStyle(this.hssfWorkbook);
+        }
     }
 
 
