@@ -4,7 +4,7 @@ import com.hongyb.excel.annotation.Style;
 import com.hongyb.excel.style.DefaultStyle;
 import com.hongyb.excel.style.StyleManager;
 import com.hongyb.excel.utils.ExcelType;
-import com.hongyb.excel.writer.ExcelWriter;
+import com.hongyb.excel.core.ExcelWriter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;

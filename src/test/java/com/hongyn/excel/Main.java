@@ -40,7 +40,6 @@ public class Main {
         File file = new File("xxx.xlsx");
         ExcelWriterBuilder builder = new ExcelWriterBuilder(ExcelType.XLSX);
         builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write(file);
-
     }
 
 }
