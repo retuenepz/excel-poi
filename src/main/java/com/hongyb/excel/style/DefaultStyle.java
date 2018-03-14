@@ -2,10 +2,7 @@ package com.hongyb.excel.style;
 
 import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.*;
 
 /**
  * 默认的Cellstyle
@@ -20,7 +17,7 @@ public class DefaultStyle {
      * 默认标题样式
      * @return
      */
-    public static CellStyle titleStyle(HSSFWorkbook workbook){
+    public static CellStyle titleStyle(Workbook workbook){
         if(titleStyle!=null){
             return titleStyle;
         }
@@ -34,7 +31,7 @@ public class DefaultStyle {
      *
      * @return
      */
-    public static CellStyle cellStyle(HSSFWorkbook workbook){
+    public static CellStyle cellStyle(Workbook workbook){
         if(cellStyle!= null){
             return cellStyle;
         }
@@ -45,7 +42,7 @@ public class DefaultStyle {
 
     }
 
-    public static CellStyle menuStyle(HSSFWorkbook hssfWorkbook) {
+    public static CellStyle menuStyle(Workbook hssfWorkbook) {
         if(menuStyle!= null){
             return menuStyle;
         }

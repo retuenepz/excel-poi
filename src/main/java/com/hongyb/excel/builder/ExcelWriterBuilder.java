@@ -1,17 +1,14 @@
 package com.hongyb.excel.builder;
 
-import com.hongyb.excel.ExcelWriter;
-import com.hongyb.excel.Exception.BuildException;
 import com.hongyb.excel.annotation.Style;
 import com.hongyb.excel.style.DefaultStyle;
-import com.hongyb.excel.style.ExcelStyle;
 import com.hongyb.excel.style.StyleManager;
-import com.hongyb.excel.utils.Collections;
-import com.hongyb.excel.utils.StringUtils;
-import com.hongyb.excel.writer.HSSFExcelWriter;
-import com.sun.xml.internal.bind.v2.TODO;
+import com.hongyb.excel.utils.ExcelType;
+import com.hongyb.excel.writer.ExcelWriter;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.List;
 
@@ -19,7 +16,7 @@ import java.util.List;
  * 作者:hongyanbo
  * 时间:2018/3/9
  */
-public class HSSFExcelWriterBuilder {
+public class ExcelWriterBuilder {
     /**
      * default sheet name
      * 默认的sheet名称
@@ -36,7 +33,7 @@ public class HSSFExcelWriterBuilder {
     /**
      *  workbook
      */
-    HSSFWorkbook hssfWorkbook = null;
+    Workbook workbook = null;
     /**
      * 标题样式
      */
@@ -51,36 +48,40 @@ public class HSSFExcelWriterBuilder {
     private CellStyle menuStyle;
 
     private StyleManager styleManager = null;
-    public HSSFExcelWriterBuilder(HSSFWorkbook hssfWorkbook) {
-        this.hssfWorkbook = hssfWorkbook;
+    public ExcelWriterBuilder(HSSFWorkbook hssfWorkbook) {
+        this.workbook = hssfWorkbook;
     }
 
-    public HSSFExcelWriterBuilder() {
-        this.hssfWorkbook = new HSSFWorkbook();
-        this.styleManager = new StyleManager(hssfWorkbook);
+    public ExcelWriterBuilder(ExcelType type) {
+        if(type == ExcelType.XLS){
+            this.workbook = new HSSFWorkbook();
+        }else if(type == ExcelType.XLSX){
+            this.workbook = new XSSFWorkbook();
+        }
+        this.styleManager = new StyleManager(workbook);
     }
 
-    public HSSFExcelWriterBuilder title(String title){
+    public ExcelWriterBuilder title(String title){
         this.titleName = title ;
         return this;
     }
-    public HSSFExcelWriterBuilder sheetName(String sheetName){
+    public ExcelWriterBuilder sheetName(String sheetName){
         this.sheetName = sheetName ;
         return this ;
     }
-    public HSSFExcelWriterBuilder titleStyle(CellStyle style){
+    public ExcelWriterBuilder titleStyle(CellStyle style){
         this.titleStyle = style ;
         return this;
     }
-    public HSSFExcelWriterBuilder cellStyle(CellStyle style){
+    public ExcelWriterBuilder cellStyle(CellStyle style){
         this.cellStyle = style ;
         return this;
     }
-    public HSSFExcelWriterBuilder menuStyle(CellStyle style){
+    public ExcelWriterBuilder menuStyle(CellStyle style){
         this.menuStyle = style;
         return this;
     }
-    public HSSFExcelWriterBuilder list(List<?> list){
+    public ExcelWriterBuilder list(List<?> list){
         this.dataList = list ;
         return this;
     }
@@ -88,7 +89,7 @@ public class HSSFExcelWriterBuilder {
     public ExcelWriter build(Class<?> clazz){
         resolveStyle(clazz);
 
-        return new HSSFExcelWriter(sheetName,titleName,dataList,hssfWorkbook,titleStyle,cellStyle,menuStyle);
+        return new ExcelWriter(sheetName,titleName,dataList,workbook,titleStyle,cellStyle,menuStyle);
     }
 
     /**
@@ -103,9 +104,9 @@ public class HSSFExcelWriterBuilder {
             this.menuStyle = styleManager.getStyle(style.menuStyle());
             this.titleStyle = styleManager.getStyle(style.titleStyle());
         }else{
-            this.cellStyle = DefaultStyle.cellStyle(this.hssfWorkbook);
-            this.menuStyle = DefaultStyle.menuStyle(this.hssfWorkbook);
-            this.titleStyle = DefaultStyle.titleStyle(this.hssfWorkbook);
+            this.cellStyle = DefaultStyle.cellStyle(this.workbook);
+            this.menuStyle = DefaultStyle.menuStyle(this.workbook);
+            this.titleStyle = DefaultStyle.titleStyle(this.workbook);
         }
     }
 

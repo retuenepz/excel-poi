@@ -1,19 +1,14 @@
 package com.hongyb.excel.writer;
 
-import com.hongyb.excel.ExcelWriter;
-import com.hongyb.excel.Exception.WrongColumnAnnotationException;
-import com.hongyb.excel.annotation.Column;
 import com.hongyb.excel.converter.BasicConverter;
 import com.hongyb.excel.converter.Converter;
 import com.hongyb.excel.converter.ConverterManager;
 import com.hongyb.excel.utils.*;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -21,7 +16,7 @@ import java.util.List;
  * 作者:hongyanbo
  * 时间:2018/3/9
  */
-public class HSSFExcelWriter implements ExcelWriter {
+public class ExcelWriter {
     /**
      * default sheet name
      * 默认的sheet名称
@@ -38,7 +33,7 @@ public class HSSFExcelWriter implements ExcelWriter {
     /**
      *  workbook
      */
-    HSSFWorkbook hssfWorkbook = null;
+    Workbook workbook = null;
     /**
      * 标题样式
      */
@@ -55,11 +50,11 @@ public class HSSFExcelWriter implements ExcelWriter {
      */
     private CellStyle menuStyle =null ;
 
-    public HSSFExcelWriter(String sheetName, String titleName, List<?> dataList, HSSFWorkbook hssfWorkbook, CellStyle titleStyle, CellStyle cellStyle, CellStyle menuStyle) {
+    public ExcelWriter(String sheetName, String titleName, List<?> dataList, Workbook hssfWorkbook, CellStyle titleStyle, CellStyle cellStyle, CellStyle menuStyle) {
         this.sheetName = sheetName;
         this.titleName = titleName;
         this.dataList = dataList;
-        this.hssfWorkbook = hssfWorkbook;
+        this.workbook = hssfWorkbook;
         this.titleStyle = titleStyle;
         this.cellStyle = cellStyle;
         this.menuStyle = menuStyle ;
@@ -75,12 +70,12 @@ public class HSSFExcelWriter implements ExcelWriter {
         if(Collections.isNotBlank(dataList)){
             declaredFields = dataList.get(0).getClass().getDeclaredFields();
         }
-        HSSFSheet sheet = hssfWorkbook.createSheet(sheetName);
+        Sheet sheet = workbook.createSheet(sheetName);
         // title处理
         if(StringUtils.isNotBlank(titleName)){
             // 设置标题样式和内容
-            HSSFRow titleRow = sheet.createRow(startRow);
-            HSSFCell titleCell = titleRow.createCell(0);
+            Row titleRow = sheet.createRow(startRow);
+            Cell titleCell = titleRow.createCell(0);
             titleCell.setCellStyle(titleStyle);
             titleCell.setCellValue(titleName);
             // 合并多少行 默认5
@@ -95,7 +90,7 @@ public class HSSFExcelWriter implements ExcelWriter {
         // 列小标题处理
         if(Arrays.isNotBlank(declaredFields)){
             if(declaredFields != null && declaredFields.length !=0){
-                HSSFRow menuRow = sheet.createRow(startRow);
+                Row menuRow = sheet.createRow(startRow);
                 menuProcess(declaredFields,menuRow);
                 startRow++;
             }
@@ -104,12 +99,12 @@ public class HSSFExcelWriter implements ExcelWriter {
         if(Collections.isNotBlank(dataList)){
             // 循环写
             for (Object rowData : dataList) {
-                HSSFRow row = sheet.createRow(startRow++);
+                Row row = sheet.createRow(startRow++);
                 Field[] fields = rowData.getClass().getDeclaredFields();
                 for (int i = 0; i < fields.length; i++) {
                     Field field = fields[i];
                     int order = ColumnUtils.getOrder(field);
-                    HSSFCell cell = row.createCell(order);
+                    Cell cell = row.createCell(order);
                     cell.setCellStyle(cellStyle);
                     Class<? extends Converter> converterClazz = ColumnUtils.getConverter(field);
                     Converter converter = ConverterManager.getConverter(converterClazz);
@@ -119,7 +114,7 @@ public class HSSFExcelWriter implements ExcelWriter {
 
         }
         // 输出文件
-        hssfWorkbook.write(output);
+        workbook.write(output);
         output.close();
     }
 
@@ -128,17 +123,16 @@ public class HSSFExcelWriter implements ExcelWriter {
      * @param declaredFields
      * @param menuRow
      */
-    private void menuProcess(Field[] declaredFields, HSSFRow menuRow) {
+    private void menuProcess(Field[] declaredFields, Row menuRow) {
         for (Field field : declaredFields) {
             int order = ColumnUtils.getOrder(field);
-            HSSFCell cell = menuRow.createCell(order);
+            Cell cell = menuRow.createCell(order);
             cell.setCellStyle(menuStyle);
             String menu = ColumnUtils.getMenu(field);
             cell.setCellValue(menu);
         }
     }
 
-    @Override
     public void write(File file) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         write(fileOutputStream);

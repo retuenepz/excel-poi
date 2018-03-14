@@ -1,10 +1,8 @@
 package com.hongyn.excel;
 
-import com.hongyb.excel.ExcelWriter;
-import com.hongyb.excel.builder.HSSFExcelWriterBuilder;
+import com.hongyb.excel.builder.ExcelWriterBuilder;
+import com.hongyb.excel.utils.ExcelType;
 import com.hongyn.excel.model.Student;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +37,8 @@ public class Main {
     }
     @Test
     public void test01() throws IOException {
-        File file = new File("xxx.xls");
-        HSSFExcelWriterBuilder builder = new HSSFExcelWriterBuilder();
+        File file = new File("xxx.xlsx");
+        ExcelWriterBuilder builder = new ExcelWriterBuilder(ExcelType.XLSX);
         builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write(file);
 
     }
