@@ -32,6 +32,7 @@ public class Main {
         xiaohong.setId("002");
         xiaohong.setName("小红");
         xiaohong.setAge(18);
+        xiaohong.setGender("0");
         xiaohong.setBirth(new Date());
         dataList.add(xiaoming);
         dataList.add(xiaohong);

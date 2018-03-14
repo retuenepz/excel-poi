@@ -2,6 +2,7 @@ package com.hongyn.excel.model;
 
 import com.hongyb.excel.annotation.Column;
 import com.hongyb.excel.annotation.Style;
+import com.hongyn.excel.converter.GenderConverter;
 import com.hongyn.excel.style.YelloStyle;
 
 import java.util.Date;
@@ -20,6 +21,16 @@ public class Student {
     private String id ;
     @Column(value=3,menu ="出生日期")
     private Date birth ;
+    @Column(value = 4,menu = "性别",converter = GenderConverter.class)
+    private String gender ;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
     public String getName() {
         return name;

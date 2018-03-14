@@ -1,5 +1,8 @@
 package com.hongyb.excel.annotation;
 
+import com.hongyb.excel.converter.BasicConverter;
+import com.hongyb.excel.converter.Converter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,5 +26,11 @@ public @interface Column {
      * @return
      */
     String menu() default "" ;
+
+    /**
+     *  类型转换
+     * @return
+     */
+    Class<? extends Converter> converter() default BasicConverter.class;
 
 }

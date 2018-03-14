@@ -4,6 +4,7 @@ import com.hongyb.excel.ExcelWriter;
 import com.hongyb.excel.Exception.WrongColumnAnnotationException;
 import com.hongyb.excel.annotation.Column;
 import com.hongyb.excel.converter.BasicConverter;
+import com.hongyb.excel.converter.Converter;
 import com.hongyb.excel.converter.ConverterManager;
 import com.hongyb.excel.utils.*;
 import org.apache.poi.hssf.usermodel.*;
@@ -110,7 +111,9 @@ public class HSSFExcelWriter implements ExcelWriter {
                     int order = ColumnUtils.getOrder(field);
                     HSSFCell cell = row.createCell(order);
                     cell.setCellStyle(cellStyle);
-                    cell.setCellValue(basicConverter.convert(ReflectUtil.getValueOfField(rowData,field)));
+                    Class<? extends Converter> converterClazz = ColumnUtils.getConverter(field);
+                    Converter converter = ConverterManager.getConverter(converterClazz);
+                    cell.setCellValue(converter.convert(ReflectUtil.getValueOfField(rowData,field)));
                 }
             }
 
