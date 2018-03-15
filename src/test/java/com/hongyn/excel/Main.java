@@ -38,8 +38,8 @@ public class Main {
     @Test
     public void test01() throws IOException {
         File file = new File("xxx.xlsx");
-        ExcelWriterBuilder builder = new ExcelWriterBuilder(ExcelType.XLSX);
-        builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write(file);
+        ExcelWriterBuilder builder = new ExcelWriterBuilder(file);
+        builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write();
     }
 
 }

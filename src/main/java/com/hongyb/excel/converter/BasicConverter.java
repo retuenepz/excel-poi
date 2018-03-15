@@ -1,7 +1,10 @@
  package com.hongyb.excel.converter;
 
+import com.hongyb.excel.Exception.FieldTypeNotSupportedException;
 import com.hongyb.excel.utils.DateUtils;
+import org.apache.poi.ss.usermodel.Cell;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 /**
@@ -22,8 +25,22 @@ public class BasicConverter implements Converter {
     }
 
     @Override
-    public Object from(String s) {
-        // TODO 这里的设计好像有问题!!!!
-        return null;
+    public Object from(Cell cell, Field field) {
+        Class type = field.getType();
+        if(int.class == type || Integer.class == type){
+            return Integer.parseInt(cell.getStringCellValue());
+        }else if(float.class == type || Float.class == type){
+            return Float.parseFloat(cell.getStringCellValue());
+        }else if(double.class == type || Double.class==type){
+            return cell.getNumericCellValue();
+        }else if(String.class == type){
+            return cell.getStringCellValue();
+        }else if(Date.class == type){
+            return cell.getDateCellValue();
+        }else{
+            throw new FieldTypeNotSupportedException("不支持的属性类型，需要自定义converter");
+        }
     }
+
+
 }

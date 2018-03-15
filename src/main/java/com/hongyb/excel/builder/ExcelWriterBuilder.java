@@ -5,11 +5,14 @@ import com.hongyb.excel.style.DefaultStyle;
 import com.hongyb.excel.style.StyleManager;
 import com.hongyb.excel.utils.ExcelType;
 import com.hongyb.excel.core.ExcelWriter;
+import com.hongyb.excel.utils.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -48,15 +51,23 @@ public class ExcelWriterBuilder {
     private CellStyle menuStyle;
 
     private StyleManager styleManager = null;
-    public ExcelWriterBuilder(HSSFWorkbook hssfWorkbook) {
-        this.workbook = hssfWorkbook;
-    }
 
-    public ExcelWriterBuilder(ExcelType type) {
-        if(type == ExcelType.XLS){
-            this.workbook = new HSSFWorkbook();
-        }else if(type == ExcelType.XLSX){
-            this.workbook = new XSSFWorkbook();
+    private File file ;
+
+    private ExcelWriter  writer= null ;
+    public ExcelWriterBuilder(File file) {
+        this.file = file ;
+        if(file != null ){
+            String name = file.getName();
+            if(StringUtils.isNotBlank(name)){
+                if(name.endsWith(".xls")){
+                    this.workbook = new HSSFWorkbook();
+                }else if(name.endsWith(".xlsx")){
+                    this.workbook = new XSSFWorkbook();
+                }else{
+                    throw new IllegalArgumentException("不支持的文件类型");
+                }
+            }
         }
         this.styleManager = new StyleManager(workbook);
     }
@@ -86,10 +97,15 @@ public class ExcelWriterBuilder {
         return this;
     }
 
-    public ExcelWriter build(Class<?> clazz){
+    public ExcelWriterBuilder build(Class<?> clazz){
         resolveStyle(clazz);
 
-        return new ExcelWriter(sheetName,titleName,dataList,workbook,titleStyle,cellStyle,menuStyle);
+        this.writer = new ExcelWriter(sheetName,titleName,dataList,workbook,titleStyle,cellStyle,menuStyle);
+        return this;
+    }
+
+    public void write() throws IOException {
+        this.writer.write(file);
     }
 
     /**

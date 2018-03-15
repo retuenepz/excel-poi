@@ -8,6 +8,12 @@ import java.lang.reflect.Field;
  */
 public class ReflectUtil {
 
+    /**
+     * 获取属性值
+     * @param obj
+     * @param field
+     * @return
+     */
     public static Object getValueOfField(Object obj , Field field){
         field.setAccessible(true);
         try {
