@@ -1,6 +1,7 @@
 package com.hongyn.excel;
 
 import com.hongyb.excel.builder.ExcelWriterBuilder;
+import com.hongyb.excel.core.BITME;
 import com.hongyb.excel.utils.ExcelType;
 import com.hongyn.excel.model.Student;
 import org.junit.Before;
@@ -40,6 +41,21 @@ public class Main {
         File file = new File("xxx.xlsx");
         ExcelWriterBuilder builder = new ExcelWriterBuilder(file);
         builder.title("测试哟").sheetName("shit").list(dataList).build(Student.class).write();
+    }
+
+    @Test
+    public void testRead(){
+        List<Student> read = BITME.read(new File("xxx.xls"), Student.class);
+        System.out.println(read.size());
+    }
+
+    @Test
+    public void testWrite(){
+        try {
+            BITME.builder(new File("xxx.xlsx")).list(dataList).build(Student.class).write();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

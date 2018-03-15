@@ -1,5 +1,6 @@
 package com.hongyb.excel.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,4 +19,15 @@ public class DateUtils {
         return format(date,"yyyy-MM-dd");
     }
 
+    public static Date parse(String value,String pattern) {
+        try {
+            return new SimpleDateFormat(pattern).parse(value);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null ;
+    }
+    public static Date parse(String value){
+        return parse(value,"yyyy-MM-dd");
+    }
 }

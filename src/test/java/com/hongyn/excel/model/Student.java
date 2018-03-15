@@ -1,6 +1,7 @@
 package com.hongyn.excel.model;
 
 import com.hongyb.excel.annotation.Column;
+import com.hongyb.excel.annotation.StartRow;
 import com.hongyb.excel.annotation.Style;
 import com.hongyn.excel.converter.GenderConverter;
 import com.hongyn.excel.style.YelloStyle;
@@ -11,6 +12,7 @@ import java.util.Date;
  * 作者:hongyanbo
  * 时间:2018/3/9
  */
+@StartRow(2)
 @Style(titleStyle = YelloStyle.class ,menuStyle = YelloStyle.class)
 public class Student {
     @Column(value=1,menu = "姓名")

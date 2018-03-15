@@ -20,7 +20,7 @@ public class ExcelReader <T> {
         Sheet sheet = workbook.getSheetAt(0); //只读第一个sheet
         int startRow = 0 ; //从第几行开始读
         startRow = getStartRow(clazz);
-        for(int i = startRow ; i < sheet.getLastRowNum(); i ++){
+        for(int i = startRow ; i <= sheet.getLastRowNum(); i ++){
             Row row = sheet.getRow(i);
             T t = assembleObject(clazz, row);
             result.add(t);
@@ -40,7 +40,10 @@ public class ExcelReader <T> {
             for (Field field : declaredFields) {
                 int order = ColumnUtils.getOrder(field);
                 Cell cell = row.getCell(order);
-                field.set(t,getCellValue(cell,field));
+                if(cell != null ) {
+                    field.setAccessible(true);
+                    field.set(t, getCellValue(cell, field));
+                }
             }
             return t;
         } catch (InstantiationException e) {
