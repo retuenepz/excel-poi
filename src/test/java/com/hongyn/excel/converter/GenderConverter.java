@@ -1,6 +1,7 @@
 package com.hongyn.excel.converter;
 
 import com.hongyb.excel.converter.Converter;
+import com.hongyb.excel.utils.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.lang.reflect.Field;
@@ -18,11 +19,16 @@ public class GenderConverter implements Converter<String> {
             return "男";
         }
     }
-
     @Override
     public String from(Cell cell, Field field) {
-        return cell.getStringCellValue();
+        String val = cell.getStringCellValue();
+        if(StringUtils.isNotBlank(val)){
+            if(val.equals("男")){
+                return "1";
+            }else{
+                return "0";
+            }
+        }
+        return "";
     }
-
-
 }
