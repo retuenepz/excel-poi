@@ -1,11 +1,6 @@
-## todo list
+## 简介
+可以支持简单格式的excel读取，导出。详情请看gitpage.
+欢迎使用，欢迎提issues
+# 联系方式
+qq: 734703533
 
-### xls,xlsx 两种格式支持
-
-## 导出
-+ 自定义 style 注解
-+ 自定义 converter 注解
-## todo
-- 导入 字段校验 （还没想好怎么做）
-- response
-- template
