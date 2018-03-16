@@ -1,8 +1,7 @@
 package com.hongyn.excel;
 
 import com.hongyb.excel.builder.ExcelWriterBuilder;
-import com.hongyb.excel.core.BITME;
-import com.hongyb.excel.utils.ExcelType;
+import com.hongyb.excel.BITME;
 import com.hongyn.excel.model.Student;
 import org.junit.Before;
 import org.junit.Test;

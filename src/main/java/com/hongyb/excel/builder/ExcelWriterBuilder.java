@@ -11,8 +11,11 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -54,6 +57,7 @@ public class ExcelWriterBuilder {
 
     private File file ;
 
+    private OutputStream outputStream ;
     private ExcelWriter  writer= null ;
     public ExcelWriterBuilder(File file) {
         this.file = file ;
@@ -71,7 +75,6 @@ public class ExcelWriterBuilder {
         }
         this.styleManager = new StyleManager(workbook);
     }
-
     public ExcelWriterBuilder title(String title){
         this.titleName = title ;
         return this;
@@ -106,6 +109,12 @@ public class ExcelWriterBuilder {
 
     public void write() throws IOException {
         this.writer.write(file);
+    }
+    public void response(HttpServletResponse response) throws IOException {
+        response.setContentType("application/x-xls");
+        String fileName = new String(file.getName().getBytes("UTF-8"),"ISO8859-1");
+        response.setHeader("Content-Disposition","attachment; filename="+fileName);
+        this.writer.write(response.getOutputStream());
     }
 
     /**

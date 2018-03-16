@@ -1,7 +1,5 @@
 package com.hongyb.excel.style;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
 /**
@@ -18,9 +16,7 @@ public class DefaultStyle {
      * @return
      */
     public static CellStyle titleStyle(Workbook workbook){
-        if(titleStyle!=null){
-            return titleStyle;
-        }
+
         titleStyle = workbook.createCellStyle() ;
         titleStyle.setAlignment(HorizontalAlignment.CENTER);
         titleStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -32,9 +28,7 @@ public class DefaultStyle {
      * @return
      */
     public static CellStyle cellStyle(Workbook workbook){
-        if(cellStyle!= null){
-            return cellStyle;
-        }
+
         cellStyle = workbook.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -43,9 +37,7 @@ public class DefaultStyle {
     }
 
     public static CellStyle menuStyle(Workbook hssfWorkbook) {
-        if(menuStyle!= null){
-            return menuStyle;
-        }
+
         menuStyle = hssfWorkbook.createCellStyle();
 
         menuStyle.setAlignment(HorizontalAlignment.CENTER);
